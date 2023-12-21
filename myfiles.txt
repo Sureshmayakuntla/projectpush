@@ -1,3 +1,4 @@
+code updated-----
 select account_number,acoount_holder_name
 from accounts
 inner join
