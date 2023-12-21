@@ -1,0 +1,32 @@
+select account_number,acoount_holder_name
+from accounts
+inner join
+(select
+    T.account_number
+	sum(case when t.transaction_type ='debit' then t.tranasaction_amount else 0 end) as total_debits
+	A.initial_balance
+	from t.transaction
+group by account_number,account_name
+having current_balance>initial_balance) b
+on a.account_number=b.account_number;
+
+
+SELECT
+    A.account_number,
+    A.account_holder_name
+FROM
+    accounts A
+INNER JOIN (
+    SELECT
+        T.account_number,
+        SUM(CASE WHEN T.transaction_type = 'debit' THEN T.transaction_amount ELSE 0 END) AS total_debits,
+        A.initial_balance
+    FROM
+        transactions T
+    JOIN
+        accounts A ON T.account_number = A.account_number
+    GROUP BY
+        T.account_number, A.initial_balance
+    HAVING
+        total_debits > A.initial_balance
+) B ON A.account_number = B.account_number;
